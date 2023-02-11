@@ -36,13 +36,15 @@ class _UserHomePageState extends State<UserHomePage> {
     initializeUserToken();
   }
 
-  String? _service;
-  DateTime time = DateTime.now();
+  String? _phone;
+  num? _rent;
+  String? _description;
+  DateTime date = DateTime.now();
   bool showDate = false;
 
-  final _serviceList = ["Haircut", "Massage", "Manicure", "Pedicure"];
+  final _serviceList = ["Deposit", "Massage", "Manicure", "Pedicure"];
 
-  final _nameController = TextEditingController();
+  final _urlController = TextEditingController();
   final _searchController = TextEditingController();
 
   @override
@@ -60,7 +62,7 @@ class _UserHomePageState extends State<UserHomePage> {
         ),
         child: TextFormField(
           autofocus: false,
-          controller: _nameController,
+          controller: _urlController,
           keyboardType: TextInputType.emailAddress,
           textInputAction: TextInputAction.next,
           decoration: const InputDecoration(
@@ -103,10 +105,10 @@ class _UserHomePageState extends State<UserHomePage> {
           disabledHint: const Text("Select Service"),
           underline: const SizedBox(),
           isExpanded: true,
-          value: _service,
+          value: _phone,
           onChanged: (newValue) {
             setState(() {
-              _service = newValue.toString();
+              _phone = newValue.toString();
             });
           },
           items: _serviceList.map((valueItem) {
@@ -123,7 +125,7 @@ class _UserHomePageState extends State<UserHomePage> {
         child: CupertinoDatePicker(
             initialDateTime: DateTime.now(),
             onDateTimeChanged: ((value) => setState(() {
-                  time = value;
+                  date = value;
                 }))),
       ),
     );
@@ -135,7 +137,7 @@ class _UserHomePageState extends State<UserHomePage> {
           children: [
             const Text("Date: ", style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(width: 10.0),
-            Text("${time.toLocal()}".split(' ')[0]),
+            Text("${date.toLocal()}".split(' ')[0]),
           ],
         ),
         const SizedBox(height: 20.0),
@@ -143,7 +145,7 @@ class _UserHomePageState extends State<UserHomePage> {
           children: [
             const Text("Time: ", style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(width: 10.0),
-            Text(getTime(time.toLocal())),
+            Text(getTime(date.toLocal())),
           ],
         ),
         const SizedBox(height: 15.0),
@@ -184,27 +186,32 @@ class _UserHomePageState extends State<UserHomePage> {
         child: MaterialButton(
           minWidth: MediaQuery.of(context).size.width,
           onPressed: () {
-            if (_nameController.text.isNotEmpty && _service != null) {
+            if (_urlController.text.isNotEmpty && _phone != null) {
               Appointment appt = Appointment(
-                  name: _nameController.text,
-                  service: _service!,
-                  status: "pending",
-                  time: time);
+                  url: _urlController.text,
+                  phone: _phone!,
+                  date: date,
+                  description: _description!,
+                  rent: _rent!,
+                  status: "deposit",
+                  id: "id");
 
               //If Form is in Edit state, call updateAppointment() on Button click if not, call bookSession()
               !_editForm
                   ? bookSession(appointment: appt)
                   : updateAppointment(Appointment(
-                      name: _nameController.text,
-                      service: _service!,
-                      time: time,
-                      status: "pending",
+                      url: _urlController.text,
+                      phone: _phone!,
+                      date: date,
+                      description: _description!,
+                      rent: _rent!,
+                      status: "deposit",
                       id: _editApptId));
               setState(() {
-                _user = _nameController.text;
-                _nameController.clear();
-                _service = null;
-                time = DateTime.now();
+                _user = _urlController.text;
+                _urlController.clear();
+                _phone = null;
+                date = DateTime.now();
               });
             } else {
               log("Please enter all fields!");
@@ -236,9 +243,9 @@ class _UserHomePageState extends State<UserHomePage> {
 
     void editAppointment(Appointment appt) {
       setState(() {
-        _nameController.text = appt.name;
-        _service = appt.service;
-        time = appt.time;
+        _urlController.text = appt.url;
+        _phone = appt.phone;
+        date = appt.date;
         _editForm = true;
         _editApptId = appt.id!;
       });
@@ -287,9 +294,11 @@ class _UserHomePageState extends State<UserHomePage> {
 bookSession({required Appointment appointment}) async {
   final docRef = apptCollection.doc();
   Appointment appt = Appointment(
-      name: appointment.name,
-      time: appointment.time,
-      service: appointment.service,
+      url: appointment.url,
+      phone: appointment.phone,
+      date: appointment.date,
+      description: appointment.description,
+      rent: appointment.rent,
       status: "pending",
       id: docRef.id);
 
@@ -320,6 +329,7 @@ void deleteAppointment(appt) {
 class GetMyAppointments extends StatelessWidget {
   final String user;
   final ValueChanged<Appointment> update;
+
   const GetMyAppointments(
       {required this.user, required this.update, super.key});
 
@@ -380,6 +390,7 @@ getMyAppointments(String user) {
 class UserScheduleCard extends StatelessWidget {
   final Appointment appointment;
   final ValueChanged<Appointment> update;
+
   const UserScheduleCard(this.appointment, {required this.update, super.key});
 
   @override

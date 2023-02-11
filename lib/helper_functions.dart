@@ -79,8 +79,8 @@ sendNotificationToAdmin({required Appointment appointment}) async {
 
   //Create Message with Notification Payload
   String constructFCMPayload(String token) {
-    String day = checkDate(appointment.time);
-    String time = getTime(appointment.time);
+    String day = checkDate(appointment.date);
+    String time = getTime(appointment.date);
     return jsonEncode(
       <String, dynamic>{
         'notification': <String, dynamic>{
@@ -88,9 +88,10 @@ sendNotificationToAdmin({required Appointment appointment}) async {
           'title': "New Appointment",
         },
         'data': <String, dynamic>{
-          'name': appointment.name,
-          'time': appointment.time.toString(),
-          'service': appointment.service,
+          'url': appointment.url,
+          'phone': appointment.phone,
+          'date': appointment.date.toString(),
+          'description': appointment.description,
           'status': appointment.status,
           'id': appointment.id
         },
@@ -137,10 +138,10 @@ sendNotificationToUser({required Appointment appointment}) async {
       <String, dynamic>{
         'notification': <String, dynamic>{
           'body':
-              "Hi ${appointment.name}, Your ${appointment.service} appointment has been confirmed!",
+              "Hi ${appointment.rent}, Your ${appointment.status} appointment has been confirmed!",
           'title': "Appointment Confirmed",
         },
-        'data': <String, dynamic>{'name': appointment.name},
+        'data': <String, dynamic>{'name': appointment.url},
         'to': token
       },
     );

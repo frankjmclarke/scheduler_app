@@ -99,9 +99,11 @@ class _LoginPageState extends State<LoginPage> {
     
     if (message.data['service'] != null) {
       Appointment appt = Appointment(
-          name: json['name'],
-          time: DateTime.parse(json['time']),
-          service: json['service'],
+          url: json['url'],
+          phone: json['phone'],
+          date: DateTime.parse(json['date']),
+          description: json['description'],
+          rent: json['rent'],
           status: json['status'],
           id: json['id']);
       Navigator.of(context).pushNamed('/details', arguments: appt);

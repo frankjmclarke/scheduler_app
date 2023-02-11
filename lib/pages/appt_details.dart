@@ -51,11 +51,11 @@ class _AppointmentDetailsState extends State<AppointmentDetails> {
         child: Column(children: [
           txtHeader,
           const SizedBox(height: 20.0),
-          BuildRow(title: "Name", details: widget.appointment.name),
-          BuildRow(title: "Service", details: widget.appointment.service),
-          BuildRow(title: "Date", details: getDate(widget.appointment.time)),
+          BuildRow(title: "Status", details: widget.appointment.status),
+          BuildRow(title: "Rent", details: widget.appointment.rent),
+          BuildRow(title: "Date", details: getDate(widget.appointment.date)),
           BuildRow(
-              title: "Time", details: "${getTime(widget.appointment.time)}"),
+              title: "Time", details: "${getTime(widget.appointment.date)}"),
           BuildRow(title: "Status", details: widget.appointment.status),
           const SizedBox(height: 20.0),
           confirmBtn

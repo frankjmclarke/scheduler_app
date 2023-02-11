@@ -174,8 +174,8 @@ class ScheduleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     var cardColor;
 
-    switch (appointment.service.toLowerCase()) {
-      case "haircut":
+    switch (appointment.status.toLowerCase()) {
+      case "deposit":
         cardColor = haircutColor;
         break;
       case "massage":
@@ -221,14 +221,14 @@ class ScheduleCard extends StatelessWidget {
                           children: [
                             SizedBox(
                                 width: 110.0,
-                                child: Text(appointment.name,
+                                child: Text(appointment.status,
                                     overflow: TextOverflow.ellipsis)),
 
                             //Appointmemt date
-                            Text(checkDate(appointment.time)),
+                            Text(checkDate(appointment.date)),
 
                             //Appointment time
-                            Text(getTime(appointment.time)),
+                            Text(getTime(appointment.date)),
                           ]),
                       Text(
                         appointment.status,
